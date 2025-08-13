@@ -22,6 +22,7 @@ AuthApp/
 ├── AuthApp.Frontend/         # React Router 7 SPA
 └── docker-compose.yml        # Docker orchestration
 ```
+```
 AuthApp/
 ├── docker-compose.yml          # Ana orchestration dosyası
 ├── AuthApp.Backend/           # .NET 8 Web API
