@@ -17,23 +17,17 @@ docker compose logs -f
 ```
 AuthApp/
 ├── AuthApp.Backend/          # .NET 8 Web API
-│   ├── AuthApp.Backend/      # Main API project  
+│   ├── AuthApp.Backend/      # Main API project
+│       ├── Controllers/
+│       ├── Services/
+│       ├── Repositories/
+│       └── Models/
 │   └── AuthApp.Backend.Tests/# Unit & Integration tests
 ├── AuthApp.Frontend/         # React Router 7 SPA
-└── docker-compose.yml        # Docker orchestration
-```
-AuthApp/
-├── docker-compose.yml          # Ana orchestration dosyası
-├── AuthApp.Backend/           # .NET 8 Web API
-│   ├── Controllers/
-│   ├── Services/
-│   ├── Repositories/
-│   └── Models/
-├── AuthApp.Frontend/          # React Router 7 SPA
 │   ├── app/
 │   ├── routes/
 │   └── services/
-└── README.md
+└── docker-compose.yml        # Docker orchestration
 ```
 
 ## 🌐 Erişim URL'leri
