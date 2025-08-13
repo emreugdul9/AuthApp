@@ -1,4 +1,5 @@
 using AuthApp.Backend.Data;
+using AuthApp.Backend.Middleware;
 using AuthApp.Backend.Repositories;
 using AuthApp.Backend.Repositories.Interfaces;
 using AuthApp.Backend.Services;
@@ -59,6 +60,9 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("AllowAllOrigins");
+
+// Request Metrics Middleware'i ekle
+app.UseMiddleware<RequestMetricsMiddleware>();
 
 app.UseAuthorization();
 

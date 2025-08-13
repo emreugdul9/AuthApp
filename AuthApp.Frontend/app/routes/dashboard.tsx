@@ -23,6 +23,9 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [protectedData, setProtectedData] = useState<string>('');
   const [protectedLoading, setProtectedLoading] = useState(false);
+  const [metrics, setMetrics] = useState<any>(null);
+  const [showMetrics, setShowMetrics] = useState(false);
+  const [autoRefreshMetrics, setAutoRefreshMetrics] = useState(false);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -141,6 +144,27 @@ export default function Dashboard() {
     console.log('=== End Debug ===');
   };
 
+  // Metrics fetch fonksiyonu
+  const fetchMetrics = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/metrics');
+      if (response.ok) {
+        const metricsData = await response.json();
+        setMetrics(metricsData);
+      }
+    } catch (error) {
+      console.error('Failed to fetch metrics:', error);
+    }
+  };
+
+  // Metrics toggle fonksiyonu
+  const toggleMetrics = async () => {
+    if (!showMetrics) {
+      await fetchMetrics();
+    }
+    setShowMetrics(!showMetrics);
+  };
+
   // Loading state
   if (loading) {
     return (
@@ -173,14 +197,23 @@ export default function Dashboard() {
                 Hoş geldiniz, {user?.email}!
               </span>
               <button 
+                onClick={toggleMetrics}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer inline-flex items-center"
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                {showMetrics ? 'Metrics Gizle' : 'Metrics Göster'}
+              </button>
+              <button 
                 onClick={debugLocalStorage}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer"
               >
                 Debug
               </button>
               <button 
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium cursor-pointer"
               >
                 Çıkış yap
               </button>
@@ -269,6 +302,102 @@ export default function Dashboard() {
                 </div>
               </div>
             </div>
+
+            {/* Metrics Widget */}
+            {showMetrics && metrics && (
+              <div className="bg-white shadow rounded-lg mb-8">
+                <div className="px-4 py-5 sm:p-6">
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                    📊 System Metrics
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200">
+                      <div className="flex items-center">
+                        <div className="p-2 bg-blue-500 rounded-full">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-600">Total Requests</p>
+                          <p className="text-xl font-bold text-gray-900">{metrics.totalRequests}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200">
+                      <div className="flex items-center">
+                        <div className="p-2 bg-green-500 rounded-full">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-600">Endpoints</p>
+                          <p className="text-xl font-bold text-gray-900">{Object.keys(metrics.endpointCounts).length}</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
+                      <div className="flex items-center">
+                        <div className="p-2 bg-purple-500 rounded-full">
+                          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-600">Last Update</p>
+                          <p className="text-sm font-bold text-gray-900">
+                            {new Date(metrics.timestamp).toLocaleTimeString('tr-TR')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gray-50 rounded-lg p-4">
+                    <h4 className="text-sm font-semibold text-gray-700 mb-3">Top Endpoints</h4>
+                    <div className="space-y-2">
+                      {Object.entries(metrics.endpointCounts)
+                        .sort(([,a], [,b]) => b - a)
+                        .slice(0, 5)
+                        .map(([endpoint, count], index) => (
+                          <div key={endpoint} className="flex items-center justify-between">
+                            <span className="text-xs font-mono text-gray-600 flex-1 truncate">
+                              {endpoint}
+                            </span>
+                            <span className="text-xs font-bold text-gray-900 ml-2">
+                              {count}
+                            </span>
+                            <div className="ml-2 w-16 bg-gray-200 rounded-full h-1.5">
+                              <div
+                                className={`h-1.5 rounded-full ${
+                                  index === 0 ? 'bg-blue-500' : 
+                                  index === 1 ? 'bg-green-500' : 
+                                  index === 2 ? 'bg-purple-500' : 'bg-gray-400'
+                                }`}
+                                style={{ 
+                                  width: `${Math.max((count / metrics.totalRequests) * 100, 10)}%` 
+                                }}
+                              ></div>
+                            </div>
+                          </div>
+                        ))
+                      }
+                    </div>
+                    <div className="mt-3 flex justify-end">
+                      <button
+                        onClick={fetchMetrics}
+                        className="text-xs text-blue-600 hover:text-blue-800 font-medium cursor-pointer"
+                      >
+                        ↻ Refresh
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Protected Route Test */}
             <div className="bg-white shadow rounded-lg mb-8">
