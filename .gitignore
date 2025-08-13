@@ -1,0 +1,50 @@
+# .NET
+AuthApp.Backend/**/bin/
+AuthApp.Backend/**/obj/
+AuthApp.Backend/**/*.user
+AuthApp.Backend/**/*.suo
+AuthApp.Backend/**/*.userprefs
+AuthApp.Backend/**/.vs/
+AuthApp.Backend/**/packages/
+AuthApp.Backend/**/TestResults/
+AuthApp.Backend/**/coverage/
+
+# Node.js
+AuthApp.Frontend/node_modules/
+AuthApp.Frontend/dist/
+AuthApp.Frontend/build/
+AuthApp.Frontend/.vite/
+AuthApp.Frontend/coverage/
+AuthApp.Frontend/test-results/
+AuthApp.Frontend/playwright-report/
+
+# Test artifacts
+**/test-results/
+**/playwright-report/
+**/coverage/
+AuthApp.Frontend/playwright-report/**/*.png
+AuthApp.Frontend/test-results/**/*.png
+
+# Environment files
+**/.env
+**/.env.local
+**/.env.development.local
+**/.env.test.local
+**/.env.production.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.docker/
+
+# Logs
+*.log
+logs/

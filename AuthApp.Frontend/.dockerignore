@@ -1,0 +1,43 @@
+# React Router generated files
+.react-router
+build
+node_modules
+README.md
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+
+# Testing
+coverage
+test-results
+playwright-report
+e2e/test-results
+e2e/playwright-report
+
+# Development files
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Git
+.git
+.gitignore
+
+# Docker
+docker-compose*.yml
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# ESLint cache
+.eslintcache

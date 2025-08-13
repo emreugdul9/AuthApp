@@ -1,0 +1,52 @@
+{
+  "name": "authapp-frontend",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "react-router build",
+    "dev": "react-router dev",
+    "start": "react-router-serve ./build/server/index.js",
+    "typecheck": "react-router typegen && tsc",
+    "test": "jest --testPathPatterns='src/test' --config jest.config.cjs --env=jsdom",
+    "test:watch": "jest --testPathPatterns='src/test' --config jest.config.cjs --env=jsdom --watch",
+    "test:coverage": "jest --testPathPatterns='src/test' --config jest.config.cjs --env=jsdom --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "docker:build": "docker build -t authapp-frontend .",
+    "docker:run": "docker run -p 3000:3000 authapp-frontend",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "docker:restart": "docker-compose restart"
+  },
+  "dependencies": {
+    "@react-router/node": "^7.7.1",
+    "@react-router/serve": "^7.7.1",
+    "isbot": "^5.1.27",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-router": "^7.7.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.54.2",
+    "@react-router/dev": "^7.7.1",
+    "@swc/core": "^1.13.3",
+    "@swc/jest": "^0.2.39",
+    "@tailwindcss/vite": "^4.1.11",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "jest": "^30.0.5",
+    "jest-environment-jsdom": "^30.0.5",
+    "tailwindcss": "^4.1.11",
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.3",
+    "vite-tsconfig-paths": "^5.1.4"
+  }
+}

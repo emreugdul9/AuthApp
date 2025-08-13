@@ -1,0 +1,85 @@
+# Multi-Service Docker Compose Configuration
+# Frontend + Backend + Database
+# 
+# Usage: docker-compose up -d
+# 
+# This will start:
+# - PostgreSQL Database (port 5432)
+# - Backend API (.NET) (port 5000) 
+# - Frontend (React Router 7) (port 3000)
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  database:
+    image: postgres:15-alpine
+    container_name: authapp-database
+    environment:
+      POSTGRES_DB: authapp
+      POSTGRES_USER: authuser
+      POSTGRES_PASSWORD: authpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - authapp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authuser -d authapp"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # Backend API (.NET)
+  backend:
+    build: 
+      context: ../AuthApp.Backend  # Backend klasörü frontend'in yanında
+      dockerfile: Dockerfile
+    container_name: authapp-backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:5000
+      - ConnectionStrings__DefaultConnection=Host=database;Port=5432;Database=authapp;Username=authuser;Password=authpass
+      - JwtSettings__Key=your-super-secret-jwt-key-here-must-be-at-least-32-characters-long
+      - JwtSettings__Issuer=AuthApp
+      - JwtSettings__Audience=AuthApp
+      - JwtSettings__ExpirationInMinutes=60
+      - CORS__AllowedOrigins=http://localhost:3000,http://frontend:3000
+    ports:
+      - "5000:5000"
+    depends_on:
+      database:
+        condition: service_healthy
+    networks:
+      - authapp-network
+    restart: unless-stopped
+
+  # Frontend (React Router 7)
+  frontend:
+    build:
+      context: .  # Current directory (AuthApp.Frontend)
+      dockerfile: Dockerfile
+    container_name: authapp-frontend
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - VITE_API_URL=http://localhost:5000
+      - VITE_API_BASE_URL=http://backend:5000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - authapp-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  authapp-network:
+    driver: bridge
+    name: authapp-network
