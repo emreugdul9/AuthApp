@@ -11,7 +11,6 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// Form action handler - Backend entegrasyonu
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email") as string;
@@ -25,7 +24,6 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   try {
-    // Backend API'ye login isteği gönder
     const response = await authApi.login({ email, password });
     console.log('Action received response:', response);
     
@@ -57,15 +55,12 @@ export default function Home() {
   const navigate = useNavigate();
   const actionData = useActionData<typeof action>();
 
-  // Client-side redirect after successful login
   useEffect(() => {
     if (actionData?.success && actionData.token && actionData.redirectTo) {
       console.log('Client-side: Login successful, storing token and redirecting');
       
-      // Token'ı localStorage'a kaydet (client-side'da)
       localStorage.setItem('authToken', actionData.token);
       
-      // User bilgilerini de kaydet
       if (actionData.user) {
         const userInfo = {
           email: actionData.user.email || actionData.user.sub,
@@ -73,7 +68,6 @@ export default function Home() {
         localStorage.setItem('user', JSON.stringify(userInfo));
       }
       
-      // Dashboard'a yönlendir
       navigate(actionData.redirectTo, { replace: true });
     }
   }, [actionData, navigate]);
@@ -81,7 +75,6 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-white to-purple-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        {/* Logo ve başlık */}
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mb-6 transform hover:scale-105 transition-transform duration-300">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -96,7 +89,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Login Form */}
         <div className="bg-white/70 backdrop-blur-sm shadow-xl rounded-2xl p-8 border border-white/20">
           {actionData?.error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-pulse">
@@ -112,7 +104,6 @@ export default function Home() {
           )}
 
           <Form method="post" className="space-y-6">
-            {/* Email input */}
             <div className="group">
               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                 E-posta
@@ -135,7 +126,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Password input */}
             <div className="group">
               <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 Şifre
@@ -158,7 +148,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Submit button */}
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 active:scale-95"
@@ -172,7 +161,6 @@ export default function Home() {
             </button>
           </Form>
 
-          {/* Register link */}
           <div className="mt-6 text-center">
             <p className="text-gray-600 text-sm">
               Hesabınız yok mu?{' '}
@@ -184,13 +172,6 @@ export default function Home() {
               </Link>
             </p>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500">
-            © 2025 AuthApp. Tüm hakları saklıdır.
-          </p>
         </div>
       </div>
     </div>

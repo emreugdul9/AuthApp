@@ -11,14 +11,12 @@ export function meta({}: Route.MetaArgs) {
   ];
 }
 
-// Form action handler - Backend entegrasyonu
 export async function action({ request }: Route.ActionArgs) {
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
 
-  // Validation
   if (!email || !password || !confirmPassword) {
     return { 
       success: false, 
@@ -41,7 +39,6 @@ export async function action({ request }: Route.ActionArgs) {
   }
 
   try {
-    // Backend API'ye register isteği gönder
     const response = await authApi.register({
       email,
       password
@@ -73,7 +70,7 @@ export default function Register() {
   const actionData = useActionData<typeof action>();
   const [countdown, setCountdown] = useState(5);
 
-  // Başarılı register sonrası countdown ve yönlendirme
+ 
   useEffect(() => {
     if (actionData?.success && actionData.redirectTo) {
       const timer = setInterval(() => {
@@ -91,20 +88,17 @@ export default function Register() {
     }
   }, [actionData, navigate]);
 
-  // Başarılı kayıt mesajı göster
   if (actionData?.success) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-100 via-white to-indigo-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
         <div className="max-w-md w-full">
           <div className="bg-white/70 backdrop-blur-sm shadow-xl rounded-2xl p-8 border border-white/20 text-center">
-            {/* Success Icon */}
             <div className="mx-auto w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mb-6 animate-bounce">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
             
-            {/* Success Message */}
             <h2 className="text-2xl font-bold text-gray-900 mb-4">
               Kayıt İşlemi Başarılı! 🎉
             </h2>
@@ -112,14 +106,13 @@ export default function Register() {
               {actionData.message || 'Hesabınız başarıyla oluşturuldu.'}
             </p>
             
-            {/* Redirect Message */}
+
             <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
               <p className="text-green-700 font-medium">
                 {countdown} saniye sonra ana sayfaya yönlendiriliyorsunuz...
               </p>
             </div>
             
-            {/* Manual redirect button */}
             <Link
               to="/"
               className="inline-flex items-center justify-center w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 active:scale-95 cursor-pointer"
@@ -138,7 +131,6 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-white to-indigo-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">
-        {/* Logo ve başlık */}
         <div className="text-center mb-8">
           <div className="mx-auto w-16 h-16 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl flex items-center justify-center mb-6 transform hover:scale-105 transition-transform duration-300">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -153,7 +145,6 @@ export default function Register() {
           </p>
         </div>
 
-        {/* Register Form */}
         <div className="bg-white/70 backdrop-blur-sm shadow-xl rounded-2xl p-8 border border-white/20">
           {actionData?.error && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl animate-pulse">
@@ -169,7 +160,6 @@ export default function Register() {
           )}
 
           <Form method="post" className="space-y-6">
-            {/* Email */}
             <div className="group">
               <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
                 E-posta
@@ -192,7 +182,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Password */}
             <div className="group">
               <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 Şifre
@@ -216,7 +205,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Confirm Password */}
             <div className="group">
               <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
                 Şifre Tekrarı
@@ -240,7 +228,6 @@ export default function Register() {
               </div>
             </div>
 
-            {/* Submit button */}
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 active:scale-95"
@@ -254,7 +241,6 @@ export default function Register() {
             </button>
           </Form>
 
-          {/* Login link */}
           <div className="mt-6 text-center">
             <p className="text-gray-600 text-sm">
               Zaten hesabınız var mı?{' '}
@@ -266,13 +252,6 @@ export default function Register() {
               </Link>
             </p>
           </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500">
-            © 2025 AuthApp. Tüm hakları saklıdır.
-          </p>
         </div>
       </div>
     </div>
