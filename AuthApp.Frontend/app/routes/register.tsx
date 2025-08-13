@@ -1,6 +1,7 @@
 import type { Route } from "./+types/register";
 import { Form, Link, useNavigate } from "react-router";
 import { useActionData } from "react-router";
+import { useEffect, useState } from "react";
 import { authApi } from "../services/authService";
 
 export function meta({}: Route.MetaArgs) {
@@ -49,8 +50,8 @@ export async function action({ request }: Route.ActionArgs) {
     if (response.success) {
       return { 
         success: true, 
-        redirectTo: '/dashboard',
-        user: response.user 
+        redirectTo: '/',
+        message: 'Kayıt işlemi başarıyla tamamlandı!'
       };
     } else {
       return { 
@@ -70,12 +71,70 @@ export async function action({ request }: Route.ActionArgs) {
 export default function Register() {
   const navigate = useNavigate();
   const actionData = useActionData<typeof action>();
+  const [countdown, setCountdown] = useState(5);
 
-  // Başarılı register sonrası yönlendirme
-  if (actionData?.success && actionData.redirectTo) {
-    navigate(actionData.redirectTo, { replace: true });
-    return null;
+  // Başarılı register sonrası countdown ve yönlendirme
+  useEffect(() => {
+    if (actionData?.success && actionData.redirectTo) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            navigate(actionData.redirectTo, { replace: true });
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
+      return () => clearInterval(timer);
+    }
+  }, [actionData, navigate]);
+
+  // Başarılı kayıt mesajı göster
+  if (actionData?.success) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-purple-100 via-white to-indigo-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full">
+          <div className="bg-white/70 backdrop-blur-sm shadow-xl rounded-2xl p-8 border border-white/20 text-center">
+            {/* Success Icon */}
+            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mb-6 animate-bounce">
+              <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            
+            {/* Success Message */}
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Kayıt İşlemi Başarılı! 🎉
+            </h2>
+            <p className="text-gray-600 mb-6">
+              {actionData.message || 'Hesabınız başarıyla oluşturuldu.'}
+            </p>
+            
+            {/* Redirect Message */}
+            <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+              <p className="text-green-700 font-medium">
+                {countdown} saniye sonra ana sayfaya yönlendiriliyorsunuz...
+              </p>
+            </div>
+            
+            {/* Manual redirect button */}
+            <Link
+              to="/"
+              className="inline-flex items-center justify-center w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-4 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 active:scale-95 cursor-pointer"
+            >
+              Ana Sayfaya Git ve Giriş Yap
+              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-100 via-white to-indigo-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full">

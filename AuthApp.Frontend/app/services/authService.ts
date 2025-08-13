@@ -131,19 +131,16 @@ export const authApi = {
 
     console.log('Register response:', response);
     
-    if (response.token) {
-      const userPayload = parseJwtToken(response.token);
-      
+    // Backend register endpoint'i sadece message döndürüyor, token döndürmüyor
+    if (response.Message || response.message) {
       return {
         success: true,
-        token: response.token,
-        user: userPayload,
-        message: response.message || 'Registration successful'
+        message: response.Message || response.message || 'Registration successful'
       };
     } else {
       return {
         success: false,
-        message: response.message || 'Registration failed - no token received'
+        message: response.error || 'Registration failed'
       };
     }
   },
