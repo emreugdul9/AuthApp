@@ -1,0 +1,17 @@
+FROM node:20-alpine AS test
+WORKDIR /app
+
+# Copy package files
+COPY package.json package-lock.json ./
+
+# Install all dependencies (including dev dependencies for testing)
+RUN npm ci
+
+# Copy source code
+COPY . .
+
+# Install global testing tools
+RUN npm install -g jest
+
+# Entry point for tests
+ENTRYPOINT ["npm", "run", "test"]

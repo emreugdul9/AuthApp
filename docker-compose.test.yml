@@ -1,0 +1,44 @@
+# Test & Development için Docker Compose
+version: '3.8'
+
+services:
+  # Backend Test Environment
+  backend-test:
+    build:
+      context: ./AuthApp.Backend
+      dockerfile: AuthApp.Backend/Dockerfile.test
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Testing
+    networks:
+      - authapp-test-network
+
+  # Frontend Test Environment  
+  frontend-test:
+    build:
+      context: ./AuthApp.Frontend
+      dockerfile: Dockerfile.test
+      target: test
+    volumes:
+      - ./AuthApp.Frontend:/app
+      - /app/node_modules
+    command: npm run test:watch
+    environment:
+      - NODE_ENV=test
+    networks:
+      - authapp-test-network
+
+  # Test Database
+  test-database:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: authapp_test
+      POSTGRES_USER: testuser
+      POSTGRES_PASSWORD: testpass
+    networks:
+      - authapp-test-network
+    tmpfs:
+      - /var/lib/postgresql/data
+
+networks:
+  authapp-test-network:
+    driver: bridge

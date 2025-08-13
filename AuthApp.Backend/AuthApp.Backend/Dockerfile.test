@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS test
+WORKDIR /src
+
+# Copy solution file
+COPY ["AuthApp.Backend.sln", "./"]
+
+# Copy project files
+COPY ["AuthApp.Backend/AuthApp.Backend.csproj", "AuthApp.Backend/"]
+COPY ["AuthApp.Backend.Tests/AuthApp.Backend.Tests.csproj", "AuthApp.Backend.Tests/"]
+
+# Restore dependencies
+RUN dotnet restore
+
+# Copy all source files  
+COPY . .
+
+# Entry point for tests (run from solution directory)
+ENTRYPOINT ["dotnet", "test", "AuthApp.Backend.Tests/AuthApp.Backend.Tests.csproj", "--logger", "console"]
