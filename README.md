@@ -50,6 +50,19 @@ cd AuthApp.Frontend
 npm run dev
 ```
 
+## 📊 Monitoring & Metrics
+
+### Backend Metrics
+- **Endpoint**: `GET /api/metrics`
+- **Serilog**: Console ve file logging
+- **Request tracking**: Her istek için timing ve count
+- **Middleware**: RequestMetricsMiddleware
+
+### Frontend Logging
+- **RequestLogger**: API çağrıları için detaylı log
+- **Console output**: Request/response timing
+- **Statistics**: Success/fail rates ve avg duration
+
 ## 📊 Servisler
 
 | Servis   | Port | Açıklama |
@@ -66,8 +79,18 @@ npm run dev
 - Health checks
 - Restart policies
 
-## 📝 Test
+## 📝 Testing
 
+### Docker'da Test Çalıştırma (Önerilen)
+```bash
+# Windows
+run-tests-docker.bat
+
+# Linux/macOS
+./run-tests-docker.sh
+```
+
+### Yerel Test Çalıştırma
 ```bash
 # Backend testleri
 cd AuthApp.Backend
@@ -77,3 +100,10 @@ dotnet test
 cd AuthApp.Frontend
 npm test
 ```
+
+### Test Environment
+- **docker-compose.test.yml**: İzole test ortamı
+- **Dockerfile.test**: Test için özel container'lar
+- **Cross-platform**: Windows (.bat) ve Linux/macOS (.sh) script'leri
+- **Containerized**: Jest PATH sorunları çözüldü
+- **Fast**: Paralel test execution
